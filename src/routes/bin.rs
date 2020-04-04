@@ -20,10 +20,10 @@ fn get_bin(req: HttpRequest) -> HttpResponse {
         res.text = res.text.replace("&", "&amp;");
         res.text = res.text.replace("<", "&lt;");
         html.push_str(format!("
-            <div class='vid'>Source #{}</div>
-            <pre><code class='language-{}'>
-                {}
-            </code></pre>
+<div class='vid'>Source #{}</div>
+<pre><code class='language-{}'>
+    {}
+</code></pre>
         ", res.dump_id, res.lang, res.text).as_ref());
         html.push_str(FOOTER);
         HttpResponse::Ok().body(html)
@@ -39,7 +39,7 @@ async fn make_bin(mut obj: web::Path<Dump>) -> Result<HttpResponse> {
     let id : u32 = rng.gen();
     obj.dump_id = id;
     if let Ok(_) = commit_source(&establish(), obj.as_ref()) {
-        Ok(HttpResponse::Ok().json("{ 'success' : 1 }"))
+        Ok(HttpResponse::Ok().json(format!("{{'success' : 1, 'id' : {} }}", id)))
     } else {
         Ok(HttpResponse::Ok().json("{ 'success' : 0 }"))
     }
@@ -69,7 +69,38 @@ fn static_files(req: HttpRequest) -> HttpResponse{
 pub fn index() -> HttpResponse {
     let mut html = String::new();
     html.push_str(HEADER);
-    //WHAT WE NEED HERE!
+    html.push_str("
+<div class='vid'>rebin - help</div>
+<pre><code class='language-plaintext'>
+    This is place to dump some code and share it with others!
+
+    How to upload?
+        You can upload a file by using the following json object (set id as 0)
+        (comments are currently not supported yet)
+        ```
+        {
+            'dump_id' : 0,
+            'username' : 'username you want',
+            'text' : 'source code',
+            'lang' : 'programming language',
+            'comments' : [],
+            'timestamp' : 0
+        }
+        ```
+
+    How do I retrieve a source file?
+        Once you have uploaded a file you can retrieve it by using its URL:
+
+        http://<hostname>/v/<id>
+
+    When you upload a file, the server will reply with an ID of the source
+        ```
+        {
+            'success': 1,
+            'id' : 0
+        }
+        ```
+</code></pre>");
     html.push_str(FOOTER);
     HttpResponse::Ok().body(html)
 }
