@@ -1,0 +1,12 @@
+[package]
+name = "rebin"
+version = "0.1.0"
+authors = ["Ahtoms <me@ahtoms.xyz>"]
+edition = "2018"
+
+[dependencies]
+actix-web = "2.0"
+actix-rt = "*"
+rusqlite = "0.21.0"
+serde = { version = "1.0", features = ["derive"] }
+rand = "0.7.3"
