@@ -22,9 +22,9 @@ fn get_bin(req: HttpRequest) -> HttpResponse {
         html.push_str(format!("
 <div class='vid'>Source #{}</div>
 <pre><code class='language-{}'>
-    {}
+{}
 </code></pre>
-        ", res.dump_id, res.lang, res.text).as_ref());
+        ", res.dumpid, res.lang, res.text).as_ref());
         html.push_str(FOOTER);
         HttpResponse::Ok().body(html)
     } else {
@@ -34,19 +34,20 @@ fn get_bin(req: HttpRequest) -> HttpResponse {
     }
 }
 
-async fn make_bin(mut obj: web::Path<Dump>) -> Result<HttpResponse> {
+async fn make_bin(mut obj: web::Json<Dump>) -> Result<HttpResponse> {
+    println!("{:?}", obj);
     let mut rng = rand::thread_rng();
     let id : u32 = rng.gen();
-    obj.dump_id = id;
-    if let Ok(_) = commit_source(&establish(), obj.as_ref()) {
+    obj.dumpid = id;
+    if let Ok(_) = commit_source(&establish(), &obj.into_inner()) {
         Ok(HttpResponse::Ok().json(format!("{{'success' : 1, 'id' : {} }}", id)))
     } else {
         Ok(HttpResponse::Ok().json("{ 'success' : 0 }"))
     }
 }
 
-async fn make_comm(obj: web::Path<Comment>) -> Result<HttpResponse> {
-    if let Ok(_) = commit_comment(&establish(), obj.as_ref()) {
+async fn make_comm(obj: web::Json<Comment>) -> Result<HttpResponse> {
+    if let Ok(_) = commit_comment(&establish(), &obj.into_inner()) {
         Ok(HttpResponse::Ok().json("{ 'success' : 1 }"))
     } else {
         Ok(HttpResponse::Ok().json("{ 'success' : 0 }"))
@@ -79,7 +80,7 @@ pub fn index() -> HttpResponse {
         (comments are currently not supported yet)
         ```
         {
-            'dump_id' : 0,
+            'dumpid' : 0,
             'username' : 'username you want',
             'text' : 'source code',
             'lang' : 'programming language',

@@ -40,8 +40,8 @@ pub fn get_source(con: &Connection, id: u32) -> Result<Dump> {
 
 pub fn commit_source(con: &Connection, source: &Dump) -> Result<usize> {
     let mut stmt = con.prepare("INSERT INTO source(source_id, username,
-        text, lang, ts) VALUES((?1, ?2, ?3, ?4, ?5);")?;
-    stmt.execute(params!(source.dump_id, source.username, source.text, source.lang,
+        text, lang, ts) VALUES(?1, ?2, ?3, ?4, ?5)")?;
+    stmt.execute(params!(source.dumpid as u32, source.username, source.text, source.lang,
      source.timestamp as u32))
 }
 
@@ -50,7 +50,7 @@ pub fn commit_comment(con: &Connection, source: &Comment) -> Result<usize> {
     let id : u32 = rng.gen();
 
     let mut stmt = con.prepare("INSERT INTO comment(comment_id, sid,
-        response, line_start, line_end, ts) VALUES((?1, ?2, ?3, ?4, ?5);")?;
+        response, line_start, line_end, ts) VALUES(?1, ?2, ?3, ?4, ?5);")?;
     stmt.execute(params!(id, source.comment_id, source.dump_id, source.comment,
      source.line_start, source.line_end, source.timestamp as u32))
 }

@@ -35,7 +35,7 @@ fn handle(mut stream: TcpStream) {
                 if let Ok(n) = spl[1].parse::<u32>() {
                     if let Ok(d) = get_source(&establish(), n) {
                         sbuf.clear();
-                        sbuf.push_str(format!("Source; #{}\n", d.dump_id).as_ref());
+                        sbuf.push_str(format!("Source; #{}\n", d.dumpid).as_ref());
                         sbuf.push_str(d.text.as_ref());
                         let _ = stream.write(sbuf.as_bytes());
                     } else {

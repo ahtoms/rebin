@@ -30,11 +30,11 @@ async fn main() -> std::io::Result<()> {
     */
     println!("{}", HEADER);
     cleaner::cleaner_start();
-    thread::spawn(move || { listen("127.0.0.1:9000"); });
+    thread::spawn(move || { listen("0.0.0.0:9000"); });
     HttpServer::new(|| {
         App::new().configure(config)
     })
-    .bind("127.0.0.1:8050")
+    .bind("0.0.0.0:8050")
     .expect("Rebin did not run")
     .run()
     .await

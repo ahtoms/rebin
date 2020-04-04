@@ -17,6 +17,10 @@ Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmai
   color: #586e75;
 }
 
+.language-plaintext tr {
+	color: white !important;
+}
+
 /* Solarized Green */
 .hljs-keyword,
 .hljs-selector-tag,
